@@ -10,4 +10,4 @@ RUN npm install
 COPY . /usr/src/bot
 
 # Start the bot.
-CMD ["node", "index-2.js"]
+CMD ["node", "main.js"]

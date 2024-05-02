@@ -2,16 +2,20 @@ const tmi = require('tmi.js');
 const getDBConnection = require('./mysql');
 const sendWebhookMessage = require('./webhook');
 const { minutesToMilliseconds, millisToMinutesAndSeconds, isNumber } = require('./util');
+var ignoreList = [];
 var enabled = true;
 var isQueued = false;
 var duration = 600000; // 10 mins default
 var bot;
-module.exports = function initBot(config) {
+var config = require('./config').config;
+module.exports = function initBot() {
     let options = {
         options: { debug: config.debug },
         channels:  config.channels
     }
     duration = config.duration;
+
+    ignoreList = config.admins.filter(user => user.rule_ignore).map(u => u.name);
 
     bot = new tmi.Client(options);
     bot.chatters = [];
@@ -25,7 +29,7 @@ module.exports = function initBot(config) {
 function handleMessage(channel, tags, message, self) {
     if(self) return;
     
-    if(tags.username === 'switchrl' && channel === '#switchrl' && message.startsWith('!')) {
+    if(config.admins.some(obj => obj.name === tags.username) && channel === '#switchrl' && message.startsWith('!')) {
         const args = message.slice(1).split(' ');
         const command = args.shift().toLowerCase();
         let u = tags.username[0].toUpperCase() + tags.username.slice(1);
@@ -38,13 +42,15 @@ function handleMessage(channel, tags, message, self) {
             }
             getChannelMessagesByLimit(args[0], args[1]);
         } else if(command === 'setduration') {
-            if(args.length == 1 && isNumber(args[0])) {
+            if(args.length == 1 && isNumber(args[0])) { 
                 duration = minutesToMilliseconds(args[0]);
-                sendWebhookMessage({content: `${u} set Twitch Logger message duration to ${millisToMinutesAndSeconds(duration)}`});
+                sendWebhookMessage(`${u} set Twitch Logger message duration to ${millisToMinutesAndSeconds(duration)}`);
             }
         }
         return;
     }
+
+    if(ignoreList.includes(tags.username)) { return; } // ignore admin channels
 
     let user = {channel: channel, name: tags.username}
     if(!bot.chatters.find(u => ((u.name === user.name) && (u.channel === user.channel)))) {
@@ -57,7 +63,7 @@ function handleMessage(channel, tags, message, self) {
         queueMsg();
     }
 
-    saveUserMsg(channel.substring(1), user.name, message); // log to database
+    saveUserMsg(channel.substring(1), user.name, message); 
 }
 
 function queueMsg() {
@@ -76,7 +82,7 @@ function queueMsg() {
         });
 
         if(enabled && (ctx.length != 0)) {
-            sendWebhookMessage({content: `**Twitch Chatters:**\n${ctx}`});
+            sendWebhookMessage(`**Twitch Chatters:**\n${ctx}`);
         }
 
         bot.chatters = [];
@@ -128,7 +134,7 @@ function getChannelMessagesByLimit(channel, limit) {
         if(ctx.length > 1000) {
             ctx.substring(0,999);
         }
-        sendWebhookMessage({content: `${ctx}`});
+        sendWebhookMessage(ctx);
       });
 
       connection.end();

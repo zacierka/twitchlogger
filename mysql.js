@@ -2,12 +2,13 @@ const { createConnection } = require('mysql2');
 
 function getDBConnection() {
     return createConnection({
-        host: process.env.DEBUG_MYSQL_HOST,
-        user: process.env.DEBUG_MYSQL_APPUSER,
-        password: process.env.DEBUG_MYSQL_ROOT_PASSWORD,
-        port: process.env.DEBUG_MYSQL_DOCKER_PORT,
-        database: process.env.DEBUG_MYSQL_DATABASE
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_APPUSER,
+        password: process.env.MYSQL_APPPASSWORD,
+        port: process.env.MYSQL_DOCKER_PORT,
+        database: process.env.MYSQL_DATABASE
     })
 }
 
 module.exports = getDBConnection;
+ 

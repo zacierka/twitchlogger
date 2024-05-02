@@ -14,12 +14,13 @@ services:
       - db-config:/etc/mysql
       - db-data:/var/lib/mysql
       - ./db/backup/files/:/data_backup/data
+      - ./master.sql:/docker-entrypoint-initdb.d/dump.sql
   app:
     build:
       context: .
       dockerfile: ./Dockerfile
     image: twitchtracker
-    #env_file: ./.env
+    env_file: ./.env
     depends_on:
       - mysqldb
 

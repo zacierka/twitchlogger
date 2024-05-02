@@ -9,8 +9,9 @@ function minutesToMilliseconds(minutes) {
 }
 
 function isNumber(value) {
-    return typeof value === 'number' && !isNaN(value);
+    let number = parseInt(value);
+    return typeof number === 'number' && !isNaN(number);
 }
 
 
-module.exports = minutesToMilliseconds, minutesToMilliseconds, isNumber
+module.exports = { minutesToMilliseconds, millisToMinutesAndSeconds, isNumber }

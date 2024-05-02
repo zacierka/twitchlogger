@@ -2,13 +2,12 @@
 const express = require('express');
 const helmet = require('helmet');
 const initBot = require('./bot.js');
-const config = require('./config.js');
 // Create an instance of Express
 const app = express();
 const port = 3000;
 app.use(helmet());
 
-const bot = initBot(config); // maybe config.config
+const bot = initBot(); // maybe config.config
 
 
 /**
