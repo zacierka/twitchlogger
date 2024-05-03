@@ -1,7 +1,7 @@
 var config = {
     channels:  [ 'emmass3531', 'itsmeganx', 'Lit_TTV', 'switchrl' ],
     duration: 600000,
-    debug: true,
+    debug: false, // prod
     admins: [ {name: 'switchrl', rule_ignore: true} ]
 }
 
