@@ -20,6 +20,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: twitchtracker
+    container_name: twitchtracker
     env_file: ./.env
     depends_on:
       - mysqldb

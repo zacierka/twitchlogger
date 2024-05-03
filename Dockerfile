@@ -1,5 +1,8 @@
 FROM node:latest
 
+LABEL AUTHOR="zacierka"
+LABEL VERSION="1"
+
 # Create the bot's directory
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
