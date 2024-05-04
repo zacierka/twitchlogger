@@ -10,3 +10,5 @@ CREATE TABLE `twitch`.`messages` (
 
 
 CREATE USER 'twitch'@'%' IDENTIFIED BY 'twitch';
+GRANT SELECT, UPDATE, INSERT ON twitch.messages TO 'twitch'@'%';
+FLUSH PRIVILEGES;
