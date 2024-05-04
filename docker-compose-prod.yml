@@ -5,6 +5,7 @@ services:
     image: mysql
     restart: always
     env_file: stack.env
+    tty: true
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
@@ -16,9 +17,12 @@ services:
       - ./db/backup/files/:/data_backup/data
       - ./master.sql:/docker-entrypoint-initdb.d/dump.sql
   app:
-    image: switchrl/twitchlogger:1.0.0
+    image: switchrl/twitchlogger:1.0.1
     container_name: twitchtracker
+    restart: unless-stopped
     env_file: stack.env
+    ports:
+      - 3000:3000
     depends_on:
       - mysqldb
 
